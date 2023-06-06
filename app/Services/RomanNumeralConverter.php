@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-class ConversionService
+class RomanNumeralConverter
 {
     /**
      * Convert the integer to roman numeral.
      */
-    public function integerToRomanNumeral(int $integer): string
+    public function convertInteger(int $integer): string
     {
         $romanNumerals = [
             1000 => 'M',

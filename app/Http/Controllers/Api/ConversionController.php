@@ -8,7 +8,8 @@ use App\Http\Requests\StoreConversionRequest;
 use App\Models\Conversion;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ConversionResource;
-use App\Services\ConversionService;
+use App\Services\IntegerConverterInterface;
+use App\Services\RomanNumeralConverter;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ConversionController extends Controller
@@ -26,10 +27,10 @@ class ConversionController extends Controller
      */
     public function store(
         StoreConversionRequest $request, 
-        ConversionService $conversionService
+        RomanNumeralConverter $converter
     ): ConversionResource {
         $integer = $request->input('integer');
-        $romanNumeral = $conversionService->integerToRomanNumeral($integer);
+        $romanNumeral = $converter->convertInteger($integer);
         $convert = Conversion::create(
             [
                 'integer' => $integer,
