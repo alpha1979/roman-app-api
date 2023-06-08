@@ -49,7 +49,6 @@ class ConversionController extends BaseController
     {
         $convertedData = ConversionResource::make($convert);
         return $this->sendResponse($convertedData, 'Converted data retrieved successfully');
-
     }
 
     /**
