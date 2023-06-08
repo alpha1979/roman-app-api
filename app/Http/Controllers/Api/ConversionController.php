@@ -6,20 +6,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\StoreConversionRequest;
 use App\Models\Conversion;
-use App\Http\Controllers\Controller;
 use App\Http\Resources\ConversionResource;
-use App\Services\IntegerConverterInterface;
 use App\Services\RomanNumeralConverter;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\JsonResponse;
 
-class ConversionController extends Controller
+class ConversionController extends BaseController
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): AnonymousResourceCollection
+    public function index(): JsonResponse
     {
-        return ConversionResource::collection(Conversion::all());
+        $conversionCollection = ConversionResource::collection(Conversion::all());
+        return $this->sendResponse($conversionCollection, 'Conversion retrieved successfully');
     }
 
     /**
@@ -28,7 +27,7 @@ class ConversionController extends Controller
     public function store(
         StoreConversionRequest $request, 
         RomanNumeralConverter $converter
-    ): ConversionResource {
+    ): JsonResponse {
         $integer = $request->input('integer');
         $romanNumeral = $converter->convertInteger($integer);
         $convert = Conversion::create(
@@ -38,34 +37,40 @@ class ConversionController extends Controller
             ]
         );
 
-        return ConversionResource::make($convert);
+        $storedData = ConversionResource::make($convert);
+        return $this->sendResponse($storedData, 'Conversion created successfully');
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Conversion $convert): ConversionResource
+    public function show(Conversion $convert): JsonResponse
     {
-        return ConversionResource::make($convert);
+        $convertedData = ConversionResource::make($convert);
+        return $this->sendResponse($convertedData, 'Converted data retrieved successfully');
+
     }
 
     /**
      * Display the recent resource.
      */
-    public function recent(): AnonymousResourceCollection
+    public function recent(): JsonResponse
     {
         $recent = Conversion::orderBy('created_at', 'desc')->limit(5)->get();
 
-        return ConversionResource::collection($recent);
+        $recentCollection = ConversionResource::collection($recent);
+        return $this->sendResponse($recentCollection, 'Most recent collection retrieved successfully');
     }
 
     /**
      * Display the recent resource.
      */
-    public function top(): AnonymousResourceCollection
+    public function top(): JsonResponse
     {
         $top = Conversion::orderBy('integer', 'desc')->limit(10)->get();
-        return ConversionResource::collection($top);
+        $topCollection = ConversionResource::collection($top);
+        return $this->sendResponse($topCollection, 'Top collection retrieved successfully');
     }
 }
 
